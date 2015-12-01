@@ -80,7 +80,7 @@ public class WordCount extends TezExampleBase {
 
     @Override
     public void run() throws Exception {
-      Preconditions.checkArgument(getInputs().size() == 1);
+      Preconditions.checkArgument(getInputs().size() == 1); // by sara :??? getInputs().size() ??? 1 input file I guess
       Preconditions.checkArgument(getOutputs().size() == 1);
       // the recommended approach is to cast the reader/writer to a specific type instead
       // of casting the input/output. This allows the actual input/output type to be replaced
@@ -89,12 +89,13 @@ public class WordCount extends TezExampleBase {
       // The inputs/outputs are referenced via the names assigned in the DAG.
       KeyValueReader kvReader = (KeyValueReader) getInputs().get(INPUT).getReader();
       KeyValueWriter kvWriter = (KeyValueWriter) getOutputs().get(SUMMATION).getWriter();
-      while (kvReader.next()) {
-        StringTokenizer itr = new StringTokenizer(kvReader.getCurrentValue().toString());
-        while (itr.hasMoreTokens()) {
-          word.set(itr.nextToken());
+      while (kvReader.next()) { // by sara : read one line 
+        StringTokenizer itr = new StringTokenizer(kvReader.getCurrentValue().toString()); // current line
+        while (itr.hasMoreTokens()) { //by sara : tokenize that file
+          word.set(itr.nextToken()); // 
           // Count 1 every time a word is observed. Word is the key a 1 is the value
-          kvWriter.write(word, one);
+          kvWriter.write(word, one); // <------------- This line must be modified to  ------------------>
+          kvWriter.write(word, two); 
         }
       }
     }
@@ -123,12 +124,12 @@ public class WordCount extends TezExampleBase {
       // The KeyValues reader provides all values for a given key. The aggregation of values per key
       // is done by the LogicalInput. Since the key is the word and the values are its counts in 
       // the different TokenProcessors, summing all values per key provides the sum for that word.
-      KeyValuesReader kvReader = (KeyValuesReader) getInputs().get(TOKENIZER).getReader();
-      while (kvReader.next()) {
+      KeyValuesReader kvReader = (KeyValuesReader) getInputs().get(TOKENIZER).getReader(); 
+      while (kvReader.next()) {// by sara : next means next key
         Text word = (Text) kvReader.getCurrentKey();
         int sum = 0;
         for (Object value : kvReader.getCurrentValues()) {
-          sum += ((IntWritable) value).get();
+          sum += ((IntWritable) value).get(); // by sara : value must be 2 here
         }
         kvWriter.write(word, new IntWritable(sum));
       }
