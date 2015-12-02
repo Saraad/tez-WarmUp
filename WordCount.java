@@ -71,7 +71,9 @@ public class WordCount extends TezExampleBase {
    * since it does not need to handle any advanced constructs for Processors.
    */
   public static class TokenProcessor extends SimpleProcessor {
-    IntWritable one = new IntWritable(1);
+    //IntWritable one = new IntWritable(1);
+    IntWritable two = new IntWritable(2); // I was thinking that this declaration must be some where out of this class
+    //Now I know the differenceses between IntWritable int also between Text and String. Thank you!
     Text word = new Text();
 
     public TokenProcessor(ProcessorContext context) {
@@ -94,8 +96,9 @@ public class WordCount extends TezExampleBase {
         while (itr.hasMoreTokens()) { //by sara : tokenize that file
           word.set(itr.nextToken()); // 
           // Count 1 every time a word is observed. Word is the key a 1 is the value
-          kvWriter.write(word, one); // <------------- This line must be modified to  ------------------>
-          kvWriter.write(word, two); 
+        //  kvWriter.write(word, one); // <------------- This line must be modified to  ------------------>
+          kvWriter.write(word, two);
+          
         }
       }
     }
